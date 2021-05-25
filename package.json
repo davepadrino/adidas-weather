@@ -1,0 +1,16 @@
+{
+  "name": "adidas-challenge",
+  "version": "1.0.0",
+  "description": "Adidas weather Challenge",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"yarn run start:back\" \"yarn run start:front\" ",
+    "start:back": "cd api && yarn start",
+    "start:front": "cd client && yarn start"
+  },
+  "author": "David Padrino",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^5.3.0"
+  }
+}
