@@ -1,6 +1,10 @@
+const moment = require("moment");
 const Weather = require("../models/weather");
 const errorHandler = require("../helpers/errorHandlerHelper");
 
+/**
+ * Get all the weather data paginated by 10 elements
+ */
 const getAllData = (req, res) => {
   let from = req.query.from || 0;
   from = Number(from);
@@ -87,7 +91,7 @@ const addWeatherData = (req, res) => {
 /**
  * Return all cities to fill dropdown of cities
  */
-const getAllCities = (req, res) => {
+const getAllCities = (_, res) => {
   try {
     Weather.aggregate(
       [
@@ -121,14 +125,14 @@ const getAllCities = (req, res) => {
  */
 const getWeatherByCityId = (req, res) => {
   const placeId = req.query.placeId;
-  const eightDaysFromNowDate = new Date();
-  eightDaysFromNowDate.setDate(eightDaysFromNowDate.getDate() + 7);
+  const start = moment().startOf("week");
+  const end = moment().endOf("week");
 
   try {
     Weather.find(
       {
         "location.id": placeId,
-        date: { $gte: new Date(), $lte: eightDaysFromNowDate }
+        date: { $gte: start, $lte: end }
       },
       (error, data) => {
         if (error) {
@@ -172,6 +176,34 @@ const getHistoricWeatherByCity = (req, res) => {
   }
 };
 
+/**
+ * Get today's weather for different cities
+ */
+const getCurrentWeather = (_, res) => {
+  const start = moment().startOf("day");
+  const end = moment().endOf("day");
+  try {
+    Weather.find({ date: { $gte: start, $lt: end } }, (error, data) => {
+      if (error) {
+        return errorHandler(res, error);
+      }
+      if (!data.length) {
+        return res.json({
+          ok: true,
+          data: "No data found for today's weather"
+        });
+      }
+
+      return res.json({
+        ok: true,
+        data
+      });
+    });
+  } catch (error) {
+    return errorHandler(res, error);
+  }
+};
+
 // Soft delete a record.
 const softDeleteRecord = (req, res) => {
   const id = req.query.id;
@@ -198,5 +230,6 @@ module.exports = {
   getAllCities,
   getWeatherByCityId,
   getHistoricWeatherByCity,
+  getCurrentWeather,
   softDeleteRecord
 };
