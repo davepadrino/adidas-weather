@@ -8,5 +8,5 @@ Missing
 FRONTEND
 Missing:
 
-- Add data for certain date
-- services for autocomplete frontend cities https://developers.google.com/maps/documentation/places/web-service/autocomplete
+- https://stackoverflow.com/questions/36249684/simple-way-to-implement-server-sent-events-in-node-js
+- small refactor

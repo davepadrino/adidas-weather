@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import moment from "moment";
 
 const HeaderContainer = styled.div`
   box-sizing: border-box;
@@ -48,8 +49,15 @@ const Header = () => {
           <li>
             <Link to="/">Home</Link>
           </li>
+          <li>
+            <Link to="/add">Add data</Link>
+          </li>
+          <li>
+            <Link to="/remove-all-data">Remove all data</Link>
+          </li>
         </MenuList>
       </nav>
+      {moment(new Date()).format("dddd, MMMM Do YYYY")}
     </HeaderContainer>
   );
 };

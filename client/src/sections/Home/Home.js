@@ -4,23 +4,11 @@ import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import Dropdown from "../../components/Dropdown/Dropdown";
 import Card from "../../components/Card/Card";
+import HourlyData from "../../components/HourlyData/HourlyData";
 
 const HomeBox = styled.div`
   margin-top: 32px;
   padding: 0 16px;
-`;
-
-const HourlyData = styled.div`
-  display: flex;
-  margin-top: 16px;
-  overflow: auto;
-  min-height: 50px;
-`;
-
-const HourData = styled.div`
-  margin-right: 12px;
-  font-size: 14px;
-  min-width: 50px;
 `;
 
 const CardStyled = styled.div`
@@ -41,9 +29,10 @@ const Home = ({ cities, noWeatherDataMessage, currentWeather }) => {
 
   return (
     <HomeBox>
+      Select a city to see this week weather
       <Dropdown
         options={cities}
-        onClick={id => history.push(`/city/${id}/week`)}
+        onClick={({ id }) => history.push(`/city/${id}/week`)}
       />
       {noWeatherDataMessage ? (
         <h1>{noWeatherDataMessage}</h1>
@@ -60,18 +49,14 @@ const Home = ({ cities, noWeatherDataMessage, currentWeather }) => {
                     {`${Math.max(...hourly)}°C`} / {`${Math.min(...hourly)}°C`}
                   </div>
                   <div>Sky: {current.sky}</div>
-                  <div>Current temp.: {current.temperature}</div>
+                  <div>
+                    Current temp.: {`${hourly[new Date().getHours()]}° C`}
+                  </div>
                 </CardStyled>
               );
             })}
           </Card>
-          {hourlyWeather && (
-            <HourlyData>
-              {hourlyWeather.map((weather, index) => (
-                <HourData key={index}>{`${weather}°C at ${index}:00`}</HourData>
-              ))}
-            </HourlyData>
-          )}
+          {hourlyWeather && <HourlyData hourlyWeather={hourlyWeather} />}
         </>
       )}
     </HomeBox>
@@ -81,7 +66,7 @@ const Home = ({ cities, noWeatherDataMessage, currentWeather }) => {
 Home.propTypes = {
   cities: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string,
+      id: PropTypes.number,
       city: PropTypes.string,
       country: PropTypes.string
     })
@@ -95,7 +80,7 @@ Home.propTypes = {
       }),
       hourly: PropTypes.arrayOf(PropTypes.number),
       location: PropTypes.shape({
-        id: PropTypes.string,
+        id: PropTypes.number,
         city: PropTypes.string,
         country: PropTypes.string
       }),

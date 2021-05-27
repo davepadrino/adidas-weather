@@ -30,7 +30,7 @@ const getAllData = (req, res) => {
 const addWeatherData = (req, res) => {
   const {
     date,
-    location: { city, country },
+    location: { city, country, id },
     current: { sky, temperature },
     hourly
   } = req.body;
@@ -55,7 +55,8 @@ const addWeatherData = (req, res) => {
       const weather = new Weather({
         location: {
           city,
-          country
+          country,
+          id
         },
         current: {
           sky,
@@ -141,7 +142,7 @@ const getWeatherByCityId = (req, res) => {
 
         return res.json({
           ok: true,
-          data
+          data: data.sort((a, b) => new Date(a.date) - new Date(b.date))
         });
       }
     ).limit(8);
@@ -204,6 +205,26 @@ const getCurrentWeather = (_, res) => {
   }
 };
 
+/**
+ * Remove all data in the collection
+ */
+const bulkRemoveData = (_, res) => {
+  try {
+    Weather.deleteMany({}, (err, data) => {
+      if (err) {
+        return errorHandler(res, error);
+      }
+
+      return res.json({
+        ok: true,
+        data
+      });
+    });
+  } catch (error) {
+    return errorHandler(res, error);
+  }
+};
+
 // Soft delete a record.
 const softDeleteRecord = (req, res) => {
   const id = req.query.id;
@@ -231,5 +252,6 @@ module.exports = {
   getWeatherByCityId,
   getHistoricWeatherByCity,
   getCurrentWeather,
+  bulkRemoveData,
   softDeleteRecord
 };

@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import Card from "../../components/Card/Card";
-import { getWeeklyWeatherByCity } from "../../services/api";
+import HourlyData from "../../components/HourlyData/HourlyData";
 
 const WeatherPage = styled.div`
   margin-top: 32px;
@@ -16,83 +16,46 @@ const CardStyled = styled.div`
   min-width: 150px;
   cursor: pointer;
   margin-right: 16px;
+  min-height: 150px;
+  margin-top: 16px;
   &:hover {
     background: aliceblue;
   }
 `;
 
-const getDates = () => {
-  const startOfWeek = moment().startOf("week");
-  const endOfWeek = moment().endOf("week");
+const WeatherCity = ({ weatherData, currentCity }) => {
+  const [hourlyWeather, setHourlyWeather] = useState(null);
 
-  const days = [];
-  let day = startOfWeek;
-
-  while (day <= endOfWeek) {
-    days.push(day.toDate());
-    day = day.clone().add(1, "d");
-  }
-
-  return days;
-};
-
-const WeatherCity = ({
-  match: {
-    params: { id }
-  }
-}) => {
-  const [weatherData, setWeatherData] = useState();
-  const getWeekWeatherData = async () => {
-    try {
-      const { data } = await getWeeklyWeatherByCity(id);
-      // message if data is empty
-      //   const arrayOfFormattedData = data.data.map(individualDate =>
-      //     moment(individualDate)
-      //   );
-      setWeatherData(data.data);
-    } catch (error) {
-      // notification
-      console.log(error);
-    }
-  };
-
-  console.log(weatherData);
-
-  useEffect(() => {
-    getWeekWeatherData();
-  }, []);
-
-  // PENDING: Check if certain date is in the array so we can put a message like "No data for this day"
   return (
     <WeatherPage>
-      {weatherData ? (
+      <>
+        {currentCity}
         <Card>
-          {getDates().map(date => {
-            return (
-              <CardStyled key={date} onClick={() => console.log("jeje")}>
-                <h3>{moment(date).format("MM/DD/YYYY")}</h3>
-                {weatherData.map(data => {
-                  console.log(getDates().indexOf(data.date));
-                  if (moment(date).isSame(moment(data.date))) {
-                    return (
-                      <>
-                        <div>
-                          {`${Math.max(...data.hourly)}°C`} /{" "}
-                          {`${Math.min(...data.hourly)}°C`}
-                        </div>
-                        <div>Sky: {data.current.sky}</div>
-                        <div>Current temp.: {data.current.temperature}</div>
-                      </>
-                    );
-                  }
-                })}
-              </CardStyled>
-            );
-          })}
+          {weatherData.map(data => (
+            <CardStyled
+              key={data.date}
+              onClick={() => setHourlyWeather(data.hourly)}
+            >
+              <h3>{moment(data.date).format("MM/DD/YYYY")}</h3>
+              {data._id ? (
+                <>
+                  <div>
+                    {`${Math.max(...data.hourly)}°C`} /{" "}
+                    {`${Math.min(...data.hourly)}°C`}
+                  </div>
+                  <div>Sky: {data.current.sky}</div>
+                  <div>
+                    Current temp.: {`${data.hourly[new Date().getHours()]}° C`}
+                  </div>
+                </>
+              ) : (
+                <div>No data for this day</div>
+              )}
+            </CardStyled>
+          ))}
         </Card>
-      ) : (
-        "Loading...."
-      )}
+        {hourlyWeather && <HourlyData hourlyWeather={hourlyWeather} />}
+      </>
     </WeatherPage>
   );
 };

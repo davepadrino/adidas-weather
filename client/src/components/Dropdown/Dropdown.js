@@ -2,9 +2,10 @@ import { useState } from "react";
 import styled from "styled-components";
 
 const DropdownContainer = styled.div`
-  width: 10.5em;
+  width: 250px;
   margin: 0 auto;
   height: 50px;
+  position: relative;
 `;
 
 const DropDownHeader = styled("div")`
@@ -59,9 +60,9 @@ const Dropdown = ({ options, onClick }) => {
   const toggling = () => setIsOpen(!isOpen);
 
   const onOptionClicked = value => () => {
-    setSelectedOption(value);
+    setSelectedOption(`${value.city}, ${value.country}`);
     setIsOpen(false);
-    onClick(value.id);
+    onClick(value);
   };
 
   return (

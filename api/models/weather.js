@@ -10,15 +10,10 @@ const weatherSchema = new Schema({
     },
     country: {
       type: String
-    }
+    },
+    id: Number
   },
   current: {
-    temperature: {
-      type: Number
-    },
-    feels_like: {
-      type: Number
-    },
     sky: {
       type: String,
       enum: validSky,
