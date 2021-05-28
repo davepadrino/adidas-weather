@@ -45,23 +45,27 @@ const WeatherCityContainer = ({
   const [weatherData, setWeatherData] = useState();
   const [currentCity, setCurrentCity] = useState();
 
-  const getWeekWeatherData = async () => {
-    try {
-      const { data } = await getWeeklyWeatherByCity(id);
-      let index = 0;
-      setCurrentCity(
-        `${data.data[0].location.city}, ${data.data[0].location.country}`
-      );
-      setWeatherData(parsedWeekWeather(index, data.data));
-    } catch (error) {
-      // notification
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    const getWeekWeatherData = async () => {
+      try {
+        const { data } = await getWeeklyWeatherByCity(id);
+        let index = 0;
+        setCurrentCity(
+          `${data.data[0].location.city}, ${data.data[0].location.country}`
+        );
+        setWeatherData(parsedWeekWeather(index, data.data));
+      } catch (error) {
+        // notification
+        console.log(error);
+      }
+    };
     getWeekWeatherData();
-  }, []);
+    const timer = setInterval(() => {
+      getWeekWeatherData();
+    }, 20000);
+    return () => clearInterval(timer);
+  }, [id]);
+
   return (
     <div>
       {weatherData ? (

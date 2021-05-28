@@ -12,5 +12,6 @@ const axiosInstance = axios.create({
 export const get = axiosInstance.get;
 export const post = axiosInstance.post;
 export const patch = axiosInstance.patch;
+export const remove = axios.delete;
 
 export default axiosInstance;

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL, get, post } from "./axiosConfig";
+import { API_URL, get, post, remove } from "./axiosConfig";
 
 export const getCityFromApi = place =>
   axios.get(
@@ -14,3 +14,5 @@ export const getWeeklyWeatherByCity = id =>
   get(`${API_URL}/get-city-weather?placeId=${id}`);
 
 export const addWeatherData = data => post(`${API_URL}/add-weather-data`, data);
+
+export const wipeData = () => remove(`${API_URL}/snap`);

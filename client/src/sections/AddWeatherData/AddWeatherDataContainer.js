@@ -5,21 +5,6 @@ import { getCities, getCityFromApi, addWeatherData } from "../../services/api";
 const AddWeatherDataContainer = () => {
   const [cities, setCities] = useState();
 
-  const getCitiesService = async () => {
-    try {
-      const { data } = await getCities();
-      const parsedCities = data.cities.map(city => ({
-        city: city.location.city,
-        country: city.location.country,
-        id: city.location.id
-      }));
-      setCities(parsedCities);
-    } catch (error) {
-      // notification
-      console.log(error);
-    }
-  };
-
   const getCityFromSearch = async searchedCity => {
     try {
       const { data } = await getCityFromApi(searchedCity);
@@ -41,6 +26,20 @@ const AddWeatherDataContainer = () => {
   };
 
   useEffect(() => {
+    const getCitiesService = async () => {
+      try {
+        const { data } = await getCities();
+        const parsedCities = data.cities.map(city => ({
+          city: city.location.city,
+          country: city.location.country,
+          id: city.location.id
+        }));
+        setCities(parsedCities);
+      } catch (error) {
+        // notification
+        console.log(error);
+      }
+    };
     getCitiesService();
   }, []);
 

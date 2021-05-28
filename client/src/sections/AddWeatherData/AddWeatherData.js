@@ -47,7 +47,7 @@ const Button = styled.button``;
 const availableSkies = ["clear", "cloudy", "rainy", "sunny"];
 const initialState = {
   location: {},
-  hourly: new Array(24).fill(),
+  hourly: new Array(24).fill(""),
   date: "",
   current: {}
 };
@@ -201,7 +201,6 @@ const AddWeatherData = ({ cities, getCityFromSearch, postNewWeatherData }) => {
           } else {
             setErrorMessage(response.error);
           }
-          console.log(response);
         }}
       >
         Add weather data

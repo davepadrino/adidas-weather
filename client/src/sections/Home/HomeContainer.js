@@ -7,38 +7,41 @@ const HomeContainer = () => {
   const [currentWeather, setCurrentWeather] = useState();
   const [noWeatherDataMessage, setNoWeatherDataMessage] = useState(null);
 
-  const getCitiesService = async () => {
-    try {
-      const { data } = await getCities();
-      const parsedCities = data.cities.map(city => ({
-        city: city.location.city,
-        country: city.location.country,
-        id: city.location.id
-      }));
-      setCities(parsedCities);
-    } catch (error) {
-      // notification
-      console.log(error);
-    }
-  };
-
-  const getCurrentDateData = async () => {
-    try {
-      const { data } = await getCurrentWeather();
-      if (data.data instanceof Array) {
-        setCurrentWeather(data.data);
-      } else {
-        setNoWeatherDataMessage(data.data);
-      }
-    } catch (error) {
-      // notification
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    const getCurrentDateData = async () => {
+      try {
+        const { data } = await getCurrentWeather();
+        if (data.data instanceof Array) {
+          setCurrentWeather(data.data);
+        } else {
+          setNoWeatherDataMessage(data.data);
+        }
+      } catch (error) {
+        // notification
+        console.log(error);
+      }
+    };
+
+    const getCitiesService = async () => {
+      try {
+        const { data } = await getCities();
+        const parsedCities = data.cities.map(city => ({
+          city: city.location.city,
+          country: city.location.country,
+          id: city.location.id
+        }));
+        setCities(parsedCities);
+      } catch (error) {
+        // notification
+        console.log(error);
+      }
+    };
     getCitiesService();
     getCurrentDateData();
+    const timer = setInterval(() => {
+      getCurrentDateData();
+    }, 20000);
+    return () => clearInterval(timer);
   }, []);
 
   return (
